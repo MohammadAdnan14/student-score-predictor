@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Student Performance Predictor</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="card">
+      <h1>Student Performance Predictor</h1>
+      <p class="subtitle">Enter student details to predict the performance score</p>
+
+      <div class="form-row">
+        <label>Study Hours (per day)</label>
+        <input id="study" type="number" step="0.1" value="3" />
+      </div>
+
+      <div class="form-row">
+        <label>Sleep Hours (per day)</label>
+        <input id="sleep" type="number" step="0.1" value="7" />
+      </div>
+
+      <div class="form-row">
+        <label>Attendance (%)</label>
+        <input id="attendance" type="number" step="1" value="85" />
+      </div>
+
+      <div class="form-row">
+        <label>Participates in Extracurriculars?</label>
+        <select id="extra">
+          <option value="1">Yes</option>
+          <option value="0" selected>No</option>
+        </select>
+      </div>
+
+      <button id="predictBtn">Predict Performance</button>
+
+      <div id="result" class="result-card" hidden>
+        <h2 id="score">--</h2>
+        <p id="remark"></p>
+        <small id="source"></small>
+      </div>
+
+      <footer class="footer">Made from your notebook — Flask backend + HTML/CSS/JS frontend</footer>
+    </main>
+
+    <script src="/static/script.js"></script>
+  </body>
+</html>
