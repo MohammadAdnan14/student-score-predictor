@@ -1,50 +1,60 @@
-# Trains a LinearRegression model if StudentPerformance.csv is present.
-import os, pickle
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+import pickle
 
-DATA_FILE = "StudentPerformance.csv"
-MODEL_PATH = "model.pkl"
 
-if not os.path.exists(DATA_FILE):
-    print("Data file not found:", DATA_FILE)
-    print("Place the CSV in the project root and re-run this script to create model.pkl")
-else:
-    df = pd.read_csv(DATA_FILE)
-    # Expecting columns - adapt if different. We'll try to find reasonable columns.
-    # Preferred columns: 'Study Hours', 'Sleep Hours', 'Attendance', 'Extracurricular', 'Performance Index'
-    col_map = {}
-    cols = [c.lower() for c in df.columns]
-    # find candidate columns by name matching
-    def find_col(key_options):
-        for k in key_options:
-            for c in df.columns:
-                if k.lower() in c.lower():
-                    return c
-        return None
-    study_col = find_col(["study","study hours","hours studied"])
-    sleep_col = find_col(["sleep","sleep hours"])
-    attend_col = find_col(["attendance"])
-    extra_col = find_col(["extracurricular","extra curricular","activities"])
-    target_col = find_col(["performance index","performance","score","marks"])
+df = pd.read_csv("StudentPerformance.csv")
 
-    required = [study_col, sleep_col, attend_col, extra_col, target_col]
-    if any(v is None for v in required):
-        print("Could not find all required columns automatically. Detected columns:", required)
-        print("Available columns:", list(df.columns))
-        raise SystemExit(1)
+print(" Dataset loaded successfully!")
+print(df.head(), "\n")
 
-    # Prepare features
-    X = df[[study_col, sleep_col, attend_col, extra_col]].copy()
-    # Ensure extracurricular is numeric (map yes/no to 1/0)
-    X[extra_col] = X[extra_col].apply(lambda v: 1 if str(v).strip().lower() in ["yes","y","1","true","t"] else 0)
-    y = df[target_col]
 
-    pipeline = Pipeline([("scaler", StandardScaler()), ("lr", LinearRegression())])
-    pipeline.fit(X, y)
-    with open(MODEL_PATH, "wb") as f:
-        pickle.dump(pipeline, f)
-    print("Model trained and saved to", MODEL_PATH)
+df["Extracurricular Activities"] = df["Extracurricular Activities"].map({"Yes": 1, "No": 0})
+
+
+features = [
+    "Hours Studied",
+    "Previous Scores",
+    "Extracurricular Activities",
+    "Sleep Hours",
+    "Sample Question Papers Practiced"
+]
+target = "Performance Index"
+
+X = df[features]
+y = df[target]
+
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+
+y_pred = model.predict(X_test)
+
+r2 = r2_score(y_test, y_pred)
+mae = mean_absolute_error(y_test, y_pred)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+
+print(" Model Evaluation:")
+print(f"R² Score: {r2:.3f}")
+print(f"MAE: {mae:.3f}")
+print(f"RMSE: {rmse:.3f}")
+
+
+with open("model.pkl", "wb") as f:
+    pickle.dump(model, f)
+
+print("\n Model saved as 'model.pkl'")
+
+
+sample = np.array([[5, 70, 1, 7, 3]]) 
+predicted_score = model.predict(sample)[0]
+print(f"\n Sample Prediction: {predicted_score:.2f}")

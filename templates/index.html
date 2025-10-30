@@ -9,11 +9,16 @@
   <body>
     <main class="card">
       <h1>Student Performance Predictor</h1>
-      <p class="subtitle">Enter student details to predict the performance score</p>
+      <p class="subtitle">Enter details to estimate the student's performance</p>
 
       <div class="form-row">
-        <label>Study Hours (per day)</label>
-        <input id="study" type="number" step="0.1" value="3" />
+        <label>Hours Studied (per day)</label>
+        <input id="hours" type="number" step="0.1" value="5" />
+      </div>
+
+      <div class="form-row">
+        <label>Previous Scores (%)</label>
+        <input id="prev" type="number" step="1" value="70" />
       </div>
 
       <div class="form-row">
@@ -22,15 +27,15 @@
       </div>
 
       <div class="form-row">
-        <label>Attendance (%)</label>
-        <input id="attendance" type="number" step="1" value="85" />
+        <label>Sample Question Papers Practiced</label>
+        <input id="papers" type="number" step="1" value="3" />
       </div>
 
       <div class="form-row">
-        <label>Participates in Extracurriculars?</label>
+        <label>Participates in Extracurricular Activities?</label>
         <select id="extra">
-          <option value="1">Yes</option>
-          <option value="0" selected>No</option>
+          <option value="Yes">Yes</option>
+          <option value="No" selected>No</option>
         </select>
       </div>
 
@@ -42,7 +47,9 @@
         <small id="source"></small>
       </div>
 
-      <footer class="footer">Made from your notebook — Flask backend + HTML/CSS/JS frontend</footer>
+      <footer class="footer">
+        Powered by Flask + ML Model trained on StudentPerformance.csv
+      </footer>
     </main>
 
     <script src="/static/script.js"></script>

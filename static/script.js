@@ -1,14 +1,16 @@
-document.getElementById("predictBtn").addEventListener("click", async ()=>{
-  const study = document.getElementById("study").value;
-  const sleep = document.getElementById("sleep").value;
-  const attendance = document.getElementById("attendance").value;
-  const extra = document.getElementById("extra").value;
+document.getElementById("predictBtn").addEventListener("click", async () => {
+  const hours = parseFloat(document.getElementById("hours").value);
+  const prev = parseFloat(document.getElementById("prev").value);
+  const sleep = parseFloat(document.getElementById("sleep").value);
+  const papers = parseFloat(document.getElementById("papers").value);
+  const extraValue = document.getElementById("extra").value;
 
   const payload = {
-    study_hours: study,
+    hours_studied: hours,
+    previous_scores: prev,
     sleep_hours: sleep,
-    attendance: attendance,
-    extracurricular: extra
+    papers_practiced: papers,
+    extracurricular: extraValue,
   };
 
   const resBox = document.getElementById("result");
@@ -16,14 +18,16 @@ document.getElementById("predictBtn").addEventListener("click", async ()=>{
   const remarkEl = document.getElementById("remark");
   const sourceEl = document.getElementById("source");
 
-  try{
+  try {
     const resp = await fetch("/predict", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(payload)
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
+
     const data = await resp.json();
-    if(resp.ok){
+
+    if (resp.ok) {
       scoreEl.textContent = data.predicted_score + " / 100";
       remarkEl.textContent = data.remark;
       sourceEl.textContent = "Source: " + data.source;
@@ -34,7 +38,7 @@ document.getElementById("predictBtn").addEventListener("click", async ()=>{
       sourceEl.textContent = JSON.stringify(data);
       resBox.hidden = false;
     }
-  }catch(err){
+  } catch (err) {
     scoreEl.textContent = "Network Error";
     remarkEl.textContent = err.message;
     sourceEl.textContent = "";
